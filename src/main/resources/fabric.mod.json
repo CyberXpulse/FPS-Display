@@ -13,9 +13,6 @@
       "org.cyber.dev.TotemSwapMod"
     ]
   },
-  "mixins": [
-    "totemswap.mixins..json"
-  ],
   "depends": {
     "fabricloader": ">=0.12.12",
     "fabric": "*",
