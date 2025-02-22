@@ -6,6 +6,7 @@
   "authors": ["CyberXpulse"],
   "description": "Automatically swaps a totem to the offhand when pressing a key.",
   "license": "MIT",
+  "icon": "assets/fpsdisplay/icon.png",
   "environment": "client",
   "entrypoints": {
     "client": [
