@@ -1,46 +1,23 @@
 {
-    "schemaVersion": 1,
-    "id": "fpsdisplay",
-    "version": "${version}",
-    "name": "FPS-Display",
-    "description": "A simple Fabric mod that displays the current FPS on screen.",
-    "authors": [
-        "Grayray75"
-    ],
-    "contributors": [
-        "koelle25",
-        "Boxadactle",
-        "notlin4",
-        "Alexander317"
-    ],
-    "contact": {
-        "homepage": "https://github.com/Grayray75/FPS-Display",
-        "sources": "https://github.com/Grayray75/FPS-Display",
-        "issues": "https://github.com/Grayray75/FPS-Display/issues"
-    },
-    "license": "LGPL-3.0-only",
-    "icon": "assets/fpsdisplay/icon.png",
-    "environment": "client",
-    "entrypoints": {
-        "client": [
-            "io.grayray75.mods.fpsdisplay.FpsDisplayMod"
-        ],
-        "modmenu": [
-            "io.grayray75.mods.fpsdisplay.config.ModMenuIntegration"
-        ]
-    },
-    "mixins": [
-        "fpsdisplay.mixins.json"
-    ],
-    "depends": {
-        "fabricloader": ">=0.15.10",
-        "minecraft": ["1.21.4"],
-        "fabric-key-binding-api-v1": "*",
-        "fabric-lifecycle-events-v1": "*"
-    },
-    "suggests": {
-        "cloth-config": "*",
-        "modmenu": "*",
-        "yet_another_config_lib_v3": "*"
-    }
+  "schemaVersion": 1,
+  "id": "totemswap",
+  "name": "Totem Swap Mod",
+  "version": "1.0.0",
+  "authors": ["CyberXpulse"],
+  "description": "Automatically swaps a totem to the offhand when pressing a key.",
+  "license": "MIT",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "org.cyber.dev.TotemSwapMod"
+    ]
+  },
+  "mixins": [
+    "totemswap.mixins..json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.12.12",
+    "fabric": "*",
+    "minecraft": "1.18.2"
+  }
 }
