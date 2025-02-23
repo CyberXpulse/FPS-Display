@@ -5,17 +5,14 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.c2s.play.ClickSlotC2SPacket;
 import net.minecraft.screen.slot.SlotActionType;
 import org.lwjgl.glfw.GLFW;
-import io.netty.buffer.Unpooled;
 
 @Environment(EnvType.CLIENT)
 public class TotemSwapMod implements ClientModInitializer {
@@ -61,7 +58,6 @@ public class TotemSwapMod implements ClientModInitializer {
         if (client.player == null || client.getNetworkHandler() == null) return;
 
         int syncId = client.player.playerScreenHandler.syncId; // Get current container ID
-        PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
 
         // Fake a player inventory click to swap the totem into the offhand
         ClickSlotC2SPacket packet = new ClickSlotC2SPacket(
