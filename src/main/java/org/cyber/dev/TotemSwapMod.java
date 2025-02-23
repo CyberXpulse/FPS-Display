@@ -21,21 +21,26 @@ public class TotemSwapMod implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         swapKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key.totemswap.swap", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_T, "category.totemswap"
+                "key.totemswap.swap", 
+                InputUtil.Type.KEYSYM, 
+                GLFW.GLFW_KEY_T, 
+                "category.totemswap"
         ));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (swapKey.wasPressed()) swapTotem(client);
+            while (swapKey.wasPressed()) {
+                swapTotem(client);
+            }
         });
     }
 
     private void swapTotem(MinecraftClient client) {
         if (client.player == null || client.getNetworkHandler() == null) return;
 
-        // If already holding a totem, no need to swap
+        // If the offhand already has a totem, exit
         if (client.player.getInventory().offHand.get(0).getItem() == Items.TOTEM_OF_UNDYING) return;
 
-        // Find a totem in inventory
+        // Find a totem in the player's inventory
         for (int slot = 0; slot < 36; slot++) {
             ItemStack stack = client.player.getInventory().getStack(slot);
             if (stack.getItem() == Items.TOTEM_OF_UNDYING) {
@@ -47,10 +52,17 @@ public class TotemSwapMod implements ClientModInitializer {
 
     private void sendSwapPacket(MinecraftClient client, int slot) {
         int syncId = client.player.playerScreenHandler.syncId;
+
         ClickSlotC2SPacket packet = new ClickSlotC2SPacket(
-                syncId, 0, slot, 40, SlotActionType.SWAP, client.player.getInventory().getStack(slot),
-                client.player.currentScreenHandler.getRevision()
+                syncId, // Sync ID of the player's inventory
+                0, // Not used in this context
+                slot, // The slot containing the totem
+                40, // The offhand slot ID
+                SlotActionType.SWAP, // The action type (swap items)
+                client.player.getInventory().getStack(slot), // The item being swapped
+                client.player.currentScreenHandler.getRevision() // Inventory state tracking
         );
+
         client.getNetworkHandler().sendPacket(packet);
     }
             }
