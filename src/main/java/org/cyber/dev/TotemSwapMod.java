@@ -16,60 +16,41 @@ import org.lwjgl.glfw.GLFW;
 
 @Environment(EnvType.CLIENT)
 public class TotemSwapMod implements ClientModInitializer {
-    private static KeyBinding swapKey;
+    private KeyBinding swapKey;
 
     @Override
     public void onInitializeClient() {
         swapKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key.totemswap.swap",
-                InputUtil.Type.KEYSYM,
-                GLFW.GLFW_KEY_T,
-                "category.totemswap"
+                "key.totemswap.swap", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_T, "category.totemswap"
         ));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            while (swapKey.wasPressed()) {
-                if (client.player != null) {
-                    swapTotem(client);
-                }
-            }
+            if (swapKey.wasPressed()) swapTotem(client);
         });
     }
 
     private void swapTotem(MinecraftClient client) {
-        if (client.player == null || client.interactionManager == null) return;
+        if (client.player == null || client.getNetworkHandler() == null) return;
 
-        // Check if the offhand already has a totem
-        if (client.player.getInventory().offHand.get(0).getItem() == Items.TOTEM_OF_UNDYING) {
-            return; // Already holding a totem
-        }
+        // If already holding a totem, no need to swap
+        if (client.player.getInventory().offHand.get(0).getItem() == Items.TOTEM_OF_UNDYING) return;
 
-        // Find a totem in the main inventory
-        for (int i = 0; i < client.player.getInventory().main.size(); i++) {
-            ItemStack stack = client.player.getInventory().main.get(i);
+        // Find a totem in inventory
+        for (int slot = 0; slot < 36; slot++) {
+            ItemStack stack = client.player.getInventory().getStack(slot);
             if (stack.getItem() == Items.TOTEM_OF_UNDYING) {
-                sendInventoryPacket(client, i);
+                sendSwapPacket(client, slot);
                 break;
             }
         }
     }
 
-    private void sendInventoryPacket(MinecraftClient client, int slotIndex) {
-        if (client.player == null || client.getNetworkHandler() == null) return;
-
-        int syncId = client.player.playerScreenHandler.syncId; // Get current container ID
-
-        // Fake a player inventory click to swap the totem into the offhand
+    private void sendSwapPacket(MinecraftClient client, int slot) {
+        int syncId = client.player.playerScreenHandler.syncId;
         ClickSlotC2SPacket packet = new ClickSlotC2SPacket(
-                syncId,
-                0,
-                slotIndex,
-                40, // Offhand slot ID
-                SlotActionType.SWAP,
-                client.player.getInventory().getStack(slotIndex),
+                syncId, 0, slot, 40, SlotActionType.SWAP, client.player.getInventory().getStack(slot),
                 client.player.currentScreenHandler.getRevision()
         );
-
         client.getNetworkHandler().sendPacket(packet);
     }
-}
+            }
