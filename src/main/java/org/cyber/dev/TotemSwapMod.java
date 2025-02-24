@@ -9,7 +9,13 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.util.Hand;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.minecraft.network.PacketByteBuf;
 
 public class TotemSwapMod implements ModInitializer, ClientModInitializer {
     private static final KeyBinding swapKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
@@ -18,10 +24,15 @@ public class TotemSwapMod implements ModInitializer, ClientModInitializer {
             GLFW.GLFW_KEY_T,
             "category.totemswap"
     ));
+    public static final Identifier TOTEM_SWAP_PACKET_ID = new Identifier("totemswap", "swap");
 
     @Override
     public void onInitialize() {
-        // No server-side initialization needed
+        ServerPlayNetworking.registerGlobalReceiver(TOTEM_SWAP_PACKET_ID, (server, player, handler, buf, responseSender) -> {
+            server.execute(() -> {
+                swapTotem(player);
+            });
+        });
     }
 
     @Override
@@ -29,7 +40,8 @@ public class TotemSwapMod implements ModInitializer, ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (swapKey.wasPressed()) {
                 if (client.player != null) {
-                    swapTotem(client.player);
+                    PacketByteBuf buf = PacketByteBufs.create();
+                    ClientPlayNetworking.send(TOTEM_SWAP_PACKET_ID, buf);
                 }
             }
         });
@@ -44,8 +56,9 @@ public class TotemSwapMod implements ModInitializer, ClientModInitializer {
                 ItemStack offHandStack = player.getOffHandStack();
                 player.getInventory().setStack(i, offHandStack);
                 player.setStackInHand(Hand.OFF_HAND, stack);
+                player.getInventory().markDirty();
                 break;
             }
         }
     }
-}
+    }
