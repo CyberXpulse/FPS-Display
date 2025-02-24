@@ -1,68 +1,57 @@
 package org.cyber.dev;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.minecraft.client.MinecraftClient;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.network.packet.c2s.play.ClickSlotC2SPacket;
-import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
-@Environment(EnvType.CLIENT)
-public class TotemSwapMod implements ClientModInitializer {
-    private KeyBinding swapKey;
+public class TotemSwapMod implements ModInitializer, ClientModInitializer {
+    private static final KeyBinding swapKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+            "key.totemswap.swap",
+            InputUtil.Type.KEYSYM,
+            GLFW.GLFW_KEY_T,
+            "category.totemswap"
+    ));
+    public static final Identifier TOTEM_SWAP_PACKET_ID = new Identifier("totemswap", "swap");
+
+    @Override
+    public void onInitialize() {
+        ServerPlayNetworking.registerGlobalReceiver(TOTEM_SWAP_PACKET_ID, (server, player, handler, buf, responseSender) -> {
+            server.execute(() -> {
+                swapTotem(player);
+            });
+        });
+    }
 
     @Override
     public void onInitializeClient() {
-        swapKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key.totemswap.swap", 
-                InputUtil.Type.KEYSYM, 
-                GLFW.GLFW_KEY_T, 
-                "category.totemswap"
-        ));
-
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (swapKey.wasPressed()) {
-                swapTotem(client);
+                ClientPlayNetworking.send(TOTEM_SWAP_PACKET_ID, new PacketByteBuf(Unpooled.buffer()));
             }
         });
     }
 
-    private void swapTotem(MinecraftClient client) {
-        if (client.player == null || client.getNetworkHandler() == null) return;
+    private static void swapTotem(PlayerEntity player) {
+        if (player == null) return;
 
-        // If the offhand already has a totem, exit
-        if (client.player.getInventory().offHand.get(0).getItem() == Items.TOTEM_OF_UNDYING) return;
-
-        // Find a totem in the player's inventory
-        for (int slot = 0; slot < 36; slot++) {
-            ItemStack stack = client.player.getInventory().getStack(slot);
+        for (int i = 0; i < player.getInventory().size(); i++) {
+            ItemStack stack = player.getInventory().getStack(i);
             if (stack.getItem() == Items.TOTEM_OF_UNDYING) {
-                sendSwapPacket(client, slot);
+                ItemStack offHandStack = player.getOffHandStack();
+                player.getInventory().setStack(i, offHandStack);
+                player.setStackInHand(Hand.OFF_HAND, stack);
                 break;
             }
         }
     }
-
-    private void sendSwapPacket(MinecraftClient client, int slot) {
-        int syncId = client.player.playerScreenHandler.syncId;
-
-        ClickSlotC2SPacket packet = new ClickSlotC2SPacket(
-                syncId, // Sync ID of the player's inventory
-                0, // Not used in this context
-                slot, // The slot containing the totem
-                40, // The offhand slot ID
-                SlotActionType.SWAP, // The action type (swap items)
-                client.player.getInventory().getStack(slot), // The item being swapped
-                client.player.currentScreenHandler.getRevision() // Inventory state tracking
-        );
-
-        client.getNetworkHandler().sendPacket(packet);
-    }
-            }
+}
