@@ -3,15 +3,12 @@ package org.cyber.dev;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 public class TotemSwapMod implements ModInitializer, ClientModInitializer {
@@ -21,22 +18,19 @@ public class TotemSwapMod implements ModInitializer, ClientModInitializer {
             GLFW.GLFW_KEY_T,
             "category.totemswap"
     ));
-    public static final Identifier TOTEM_SWAP_PACKET_ID = new Identifier("totemswap", "swap");
 
     @Override
     public void onInitialize() {
-        ServerPlayNetworking.registerGlobalReceiver(TOTEM_SWAP_PACKET_ID, (server, player, handler, buf, responseSender) -> {
-            server.execute(() -> {
-                swapTotem(player);
-            });
-        });
+        // No server-side initialization needed
     }
 
     @Override
     public void onInitializeClient() {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (swapKey.wasPressed()) {
-                ClientPlayNetworking.send(TOTEM_SWAP_PACKET_ID, new PacketByteBuf(Unpooled.buffer()));
+                if (client.player != null) {
+                    swapTotem(client.player);
+                }
             }
         });
     }
