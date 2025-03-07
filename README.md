@@ -1,47 +1,79 @@
-# FPS-Display
-[![Modrinth downloads](https://img.shields.io/modrinth/dt/DIlqwRFH?logo=modrinth&label=Modrinth&color=00AF5C)](https://modrinth.com/mod/fpsdisplay)
-[![CurseForge downloads](https://img.shields.io/curseforge/dt/440228?logo=curseforge&label=CurseForge&color=F16436)](https://www.curseforge.com/minecraft/mc-mods/fpsdisplay)
+# Totem Swap Mod
 
-A simple **Fabric** mod that displays the current FPS on screen.
+![Totem of Undying](https://static.wikia.nocookie.net/minecraft_gamepedia/images/3/3a/Totem_of_Undying_JE3_BE2.png/revision/latest?cb=20191229235406)
 
-## 🖼️ Showcase
+Totem Swap Mod is a Minecraft Fabric mod that allows players to quickly swap a Totem of Undying to their offhand slot with a simple key press. This mod is designed to be efficient and user-friendly, ensuring that players can react quickly in dangerous situations without having to manually search their inventory.
 
-![preview](./media/showcase/fps-counter.png)
+## Features
 
-### ⚙️ Settings
+- **Keybinding for Totem Swap**: Press the `T` key to automatically search your inventory for a Totem of Undying and place it in your offhand slot.
+- **Optimized Inventory Management**: The mod sends the necessary packets to the server to register the inventory changes, ensuring smooth and quick swaps without causing auto-clicker detection issues.
+- **Lightweight and Efficient**: Designed to run efficiently in the background without affecting game performance.
 
-In order to access the settings menu ingame, you either need [Cloth-Config](https://modrinth.com/mod/cloth-config) or [YetAnotherConfigLib](https://modrinth.com/mod/yacl) installed.
-If both config libraries are installed YetAnotherConfigLib will be used.
+## Installation
 
-<details>
-<summary>Settings Menu (YetAnotherConfigLib)</summary>
+1. **Download and Install Fabric Loader**:
+   - Visit the [Fabric website](https://fabricmc.net/use/) and download the Fabric Loader installer.
+   - Run the installer, select your Minecraft version, and click "Install".
 
-![settings](./media/showcase/settings-yacl.png)
-</details>
+2. **Download Fabric API**:
+   - Download the [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api) and place it in your Minecraft `mods` folder.
 
-<details>
-<summary>Settings Menu (Cloth-Config)</summary>
+3. **Download Totem Swap Mod**:
+   - Download the latest release of Totem Swap Mod from the [Releases](https://github.com/CyberXpulse/totem-swap-mod/releases) page.
+   - Place the downloaded JAR file in your Minecraft `mods` folder.
 
-![settings](./media/showcase/settings-clothconfig.png)
-</details>
+4. **Launch Minecraft**:
+   - Open the Minecraft launcher, select the Fabric profile, and click "Play".
 
-## 📥 Downloads
+## Usage
 
-You can download this mod from:
-* [Modrinth](https://modrinth.com/mod/fpsdisplay)
-* [CurseForge](https://www.curseforge.com/minecraft/mc-mods/fpsdisplay)
+1. **Start Minecraft**:
+   - Launch Minecraft with the Fabric profile.
 
-## 🎲 Version support
+2. **In-Game Keybinding**:
+   - By default, the totem swap keybinding is set to `T`. You can change this keybinding in the Minecraft controls settings.
 
-| Minecraft version | Latest mod version | Support status            |
-| ----------------- | ------------------ | ------------------------- |
-| 1.21.4            | `4.2.4`            | :heavy_check_mark: Active |
-| 1.21.2, 1.21.3    | `4.2.3`            | :x: Obsolete              |
-| 1.21, 1.21.1      | `4.2.1`            | :x: Obsolete              |
-| 1.20.5, 1.20.6    | `4.1.0`            | :x: Obsolete              |
-| 1.20.3, 1.20.4    | `4.0.0`            | :x: Obsolete              |
-| 1.14 - 1.20.2     | `3.1.0`            | :x: Obsolete              |
-| 1.12.2            |                    | :white_circle: soon™      |
-| 1.8.9             | `3.1.0`            | :warning: soon™           |
+3. **Swap Totem to Offhand**:
+   - Press the `T` key to automatically move a Totem of Undying from your inventory to your offhand slot. The mod will search your entire inventory, including the hotbar, for a Totem of Undying.
 
-Starting with v4.0 this mod will only be developed for the latest Minecraft version available and maybe some older legacy version I still care about.
+## Technical Details
+
+### Mod Structure
+
+- **Mod Initialization**:
+  - The mod initializes both on the client and server sides to ensure proper functionality.
+
+- **Keybinding Registration**:
+  - The `T` key is registered as the default keybinding for swapping the totem. This can be customized in the controls settings.
+
+- **Inventory Management**:
+  - The mod searches the player's inventory for a Totem of Undying and uses the `ClickSlotC2SPacket` to perform the swap. This ensures that the server is aware of the inventory changes and helps prevent auto-clicker detection issues.
+
+## Contributing
+
+We welcome contributions to enhance the Totem Swap Mod. To contribute:
+
+1. Fork the repository.
+2. Create a new branch for your feature or bug fix.
+3. Commit your changes and push them to your fork.
+4. Create a pull request to the main repository.
+
+Please ensure your code follows the project's coding standards and includes appropriate tests.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+
+## Support
+
+If you encounter any issues or have questions, please open an issue on the [GitHub repository](https://github.com/CyberXpulse/totem-swap-mod/issues) or contact us via the support page.
+
+## Acknowledgments
+
+- [FabricMC](https://fabricmc.net/) for providing the modding framework.
+- [Yarn](https://github.com/FabricMC/yarn) for the Minecraft mappings.
+
+Enjoy the Totem Swap Mod and stay safe in your Minecraft adventures!
+
+```
