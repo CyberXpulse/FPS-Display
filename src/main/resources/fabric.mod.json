@@ -1,21 +1,26 @@
 {
   "schemaVersion": 1,
   "id": "totemswap",
-  "name": "Totem Swap Mod",
   "version": "1.0.0",
+  "name": "Totem Swap",
+  "description": "Quickly swaps a totem into offhand.",
   "authors": ["CyberXpulse"],
-  "description": "Automatically swaps a totem to the offhand when pressing a key.",
+  "contact": {
+    "homepage": "https://cyberxpulse.com",
+    "sources": "https://github.com/cyberxpulse"
+  },
   "license": "MIT",
-  "icon": "assets/fpsdisplay/icon.png",
+  "icon": "assets/totemswap/icon.png",
   "environment": "client",
   "entrypoints": {
-    "client": [
-      "org.cyber.dev.TotemSwapMod"
-    ]
+    "client": ["org.cyber.dev.TotemSwap"]
   },
+  "mixins": [
+    "mixins.totemswap.json"
+  ],
   "depends": {
     "fabricloader": ">=0.12.12",
     "fabric": "*",
-    "minecraft": "1.18.2"
+    "minecraft": ">=1.18.2"
   }
 }
