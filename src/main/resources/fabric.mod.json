@@ -10,7 +10,7 @@
     "sources": "https://github.com/cyberxpulse"
   },
   "license": "MIT",
-  "icon": "assets/totemswap/icon.png",
+  "icon": "assets/fpsdisplay/icon.png",
   "environment": "client",
   "entrypoints": {
     "client": ["org.cyber.dev.TotemSwap"]
